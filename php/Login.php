@@ -1,0 +1,56 @@
+<?php
+session_start();
+$conn = new mysqli("localhost", "root", "", "fyp");
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    $query = "SELECT * FROM users WHERE Email = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows == 1) {
+        $user = $result->fetch_assoc();
+        if (password_verify($password, $user['Password'])) {
+            $_SESSION['UserID'] = $user['UserID'];
+            header("Location: Prototype.php");
+            exit();
+        } else {
+            echo "Incorrect password.";
+        }
+    } else {
+        echo "No user found with this email.";
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="../css/Login.css">
+</head>
+<body>
+    <div class="login-container">
+        <form class="login-form" action="Login.php" method="POST">
+            <h1>Welcome</h1>
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="login-button">Login</button>
+            <p class="signup-link">
+                Don't have an account? <a href="Signup.php">Sign up</a>
+            </p>
+        </form>
+    </div>
+</body>
+</html>
