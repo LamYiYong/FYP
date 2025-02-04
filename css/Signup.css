@@ -6,7 +6,7 @@ html {
   
   body {
     font-family: 'Arial', sans-serif;
-    background: #f5f5f5;
+    background: url('../css/image/bg.jpg') no-repeat center center fixed;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -14,7 +14,7 @@ html {
   }
   
   .signup-container {
-    background: #fff;
+    background: rgba(255,255,255,0.9);
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -40,7 +40,7 @@ html {
   }
   
   .signup-form input {
-    width: 100%;
+    width: 95%;
     padding: 0.5rem;
     font-size: 14px;
     margin-top: 0.5rem;

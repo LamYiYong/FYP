@@ -19,38 +19,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("Location: Prototype.php");
             exit();
         } else {
-            echo "Incorrect password.";
+            echo '<script>alert("Incorrect password.")</script>';
         }
     } else {
-        echo "No user found with this email.";
+        echo '<script>alert("No user found with this email.")</script>';
     }
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
     <link rel="stylesheet" href="../css/Login.css">
 </head>
+
 <body>
     <div class="login-container">
         <form class="login-form" action="Login.php" method="POST">
+            <img src="../css/image/icon.png" alt="">
             <h1>Welcome</h1>
             <div class="input-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                <input type="email" id="email" name="email" placeholder="abc@gmail.com" required>
             </div>
             <div class="input-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <input type="password" id="password" name="password" placeholder="Abc@1234" required>
             </div>
+            <input type="checkbox" id="showPassword"> Show Password
             <button type="submit" class="login-button">Login</button>
             <p class="signup-link">
                 Don't have an account? <a href="Signup.php">Sign up</a>
             </p>
         </form>
     </div>
+    <script src="../js/Login.js"></script>
 </body>
 </html>

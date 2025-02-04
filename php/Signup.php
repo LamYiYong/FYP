@@ -31,19 +31,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <form class="signup-form" action="Signup.php" method="POST">
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                <input type="text" id="username" name="username" placeholder="abc@012" required>
             </div>
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                <input type="email" id="email" name="email" placeholder="abc@gmail.com" required>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <input type="password" id="password" name="password" placeholder="Abc@1234" required>
+                <div><input type="checkbox" id="showPassword">Show Password</div>
             </div>
             <button type="submit" class="signup-btn">Sign Up</button>
             <p class="login-link">Already have an account? <a href="Login.php">Log In</a></p>
         </form>
     </div>
+    <script src="../js/SignUp.js"></script>
 </body>
 </html>

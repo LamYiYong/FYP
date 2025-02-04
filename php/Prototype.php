@@ -19,7 +19,7 @@ if (!isset($_SESSION['UserID'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI-Driven Research Paper Suggestion System</title>
+    <title>Home</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/Prototype.css">
 </head>
@@ -38,7 +38,7 @@ if (!isset($_SESSION['UserID'])) {
             <div id="papers"></div>
         </div>
         <div class="logout">
-            <a href="Prototype.php?logout=true">Logout</a>
+            
         </div>
     </div>
 
@@ -94,4 +94,5 @@ if (!isset($_SESSION['UserID'])) {
         }
     </script>
 </body>
+
 </html>
