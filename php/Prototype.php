@@ -22,8 +22,10 @@ if (!isset($_SESSION['UserID'])) {
     <title>Home</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/Prototype.css">
+    <link rel="stylesheet" href="../css/navbar.css">
 </head>
 <body>
+<?php include 'nav-bar.php' ?>
     <div class="container">
         <h1>AI-Driven Research Paper Suggestion System</h1>
         <div class="about">
