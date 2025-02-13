@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($result->num_rows == 1) {
         $user = $result->fetch_assoc();
-        if (password_verify($password, $user['Password'])) {
+        if ($password === $user['Password']) {
             $_SESSION['UserID'] = $user['UserID'];
             header("Location: Prototype.php");
             exit();

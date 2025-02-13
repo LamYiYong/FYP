@@ -4,7 +4,7 @@ $conn = new mysqli("localhost", "root", "", "fyp");
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $email = $_POST['email'];
-    $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+    $password = $_POST['password'];
 
     $query = "INSERT INTO users (Name, Email, Password) VALUES (?, ?, ?)";
     $stmt = $conn->prepare($query);
