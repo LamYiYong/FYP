@@ -13,6 +13,28 @@ if (!isset($_SESSION['UserID'])) {
     header("Location: Login.php");
     exit();
 }
+
+function safeOutput($value) {
+    if (is_array($value)) {
+        return htmlspecialchars(implode(', ', $value));
+    }
+    return htmlspecialchars($value);
+}
+
+$results = [];
+
+if (isset($_POST['query'])) {
+    $query = escapeshellarg($_POST['query']);
+
+    // Run the Python script
+    shell_exec("python3 search.py $query");
+
+    // Load the JSON results
+    if (file_exists('results.json')) {
+        $jsonData = file_get_contents('results.json');
+        $results = json_decode($jsonData, true);
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -32,69 +54,37 @@ if (!isset($_SESSION['UserID'])) {
             <p>Welcome! This system leverages AI to suggest research papers based on your interests.</p>
         </div>
         <div class="input-section">
-            <input type="text" id="searchQuery" placeholder="Enter a topic or field of interest...">
-            <button onclick="suggestPapers()">Suggest Papers</button>
+            <form method="POST">
+            <input type="text" name="query" placeholder="Enter your research interest (e.g., Computer Science)" required>
+            <button type="submit">Search</button>
+        </form>
         </div>
         <div class="papers-list">
             <h2>Here are some papers you might be interested in:</h2>
-            <div id="papers"></div>
+            <div id="papers"></div>   
+            <?php if (!empty($results)): ?>
+            <div class="papers-list">
+                <?php foreach ($results as $paper): ?>
+                    <div class="paper-item">
+                        <div class="paper-title"><?= safeOutput($paper['title']) ?></div>
+                        <div class="paper-details">
+                            <?= safeOutput($paper['author']) ?> |
+                            <?= safeOutput($paper['year']) ?>
+                        </div>
+                        <p><?= safeOutput($paper['abstract']) ?></p>
+                        <?php if (!empty($paper['url']) && $paper['url'] !== "Unavailable"): ?>
+                            <a href="<?= safeOutput($paper['url']) ?>" target="_blank">View Paper</a>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
         </div>
         <div class="logout">
             
         </div>
     </div>
-
-    <script>
-        async function suggestPapers() {
-            const query = document.getElementById('searchQuery').value.trim();
-            const papersContainer = document.getElementById('papers');
-            papersContainer.innerHTML = '';
-
-            if (!query) {
-                alert('Please enter a topic or field of interest.');
-                return;
-            }
-
-            const apiUrl = `https://api.crossref.org/works?query=${encodeURIComponent(query)}&rows=5`;
-
-            try {
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-
-                if (data.message && data.message.items && data.message.items.length > 0) {
-                    data.message.items.forEach(paper => {
-                        if (paper.title && paper.title.length > 0) {
-                            const paperElement = document.createElement('div');
-                            paperElement.className = 'paper-item';
-
-                            const titleElement = document.createElement('div');
-                            titleElement.className = 'paper-title';
-                            const titleLink = document.createElement('a');
-                            titleLink.href = paper.URL;
-                            titleLink.target = '_blank';
-                            titleLink.textContent = paper.title[0];
-                            titleElement.appendChild(titleLink);
-
-                            paperElement.appendChild(titleElement);
-
-                            const detailsElement = document.createElement('div');
-                            detailsElement.className = 'paper-details';
-                            const publishedDate = paper['published-print'] ? paper['published-print']['date-parts'][0].join('-') : 'N/A';
-                            detailsElement.textContent = `Published: ${publishedDate} | DOI: ${paper.DOI}`;
-                            paperElement.appendChild(detailsElement);
-
-                            papersContainer.appendChild(paperElement);
-                        }
-                    });
-                } else {
-                    papersContainer.innerHTML = '<p>No papers found matching your query.</p>';
-                }
-            } catch (error) {
-                console.error('Error fetching papers:', error);
-                papersContainer.innerHTML = '<p>There was an error fetching the papers. Please try again later.</p>';
-            }
-        }
-    </script>
+ 
 </body>
 
 </html>

@@ -1,0 +1,51 @@
+[
+  {
+    "title": "Research in software engineering: an analysis of the literature",
+    "author": [
+      "RL Glass",
+      "I Vessey",
+      "V Ramesh"
+    ],
+    "abstract": "In this paper, we examine the state of software engineering ( of the field of software engineering  research, we determined to  key journals of the software engineering literature during that",
+    "year": "2002",
+    "url": "https://www.sciencedirect.com/science/article/pii/S0950584902000496"
+  },
+  {
+    "title": "Software engineering",
+    "author": [
+      "KK Aggarwal"
+    ],
+    "abstract": "software using well established software engineering methodologies. Software engineering  methodologies constitute the framework that guides us in optimally developing the software",
+    "year": "2005",
+    "url": "https://books.google.com/books?hl=en&lr=&id=dx2C9Zkez5YC&oi=fnd&pg=PA1&dq=Software+Engineering&ots=ZfVbZkNocI&sig=rgLFT92Nzh-7K0jc1FxoWJ_qWDI"
+  },
+  {
+    "title": "Systematic review in software engineering",
+    "author": [
+      "J Biolchini",
+      "PG Mian",
+      "ACC Natali"
+    ],
+    "abstract": "Differently to the medical area, Software Engineering has some  software engineering is  that most software engineering methods and techniques must be performed by skilled software",
+    "year": "2005",
+    "url": "https://www.elizabete.com.br/ihc2012/Tutorial_IHC_2012_files/ConceitosRevisaoSistematica_Biolchini.pdf"
+  },
+  {
+    "title": "Software engineering",
+    "author": [
+      "SR Schach"
+    ],
+    "abstract": "This paper aims to present software engineering ontology as software engineering  knowledge representation for a multi-site software development. It will not only facilitate the",
+    "year": "1990",
+    "url": "https://dl.acm.org/doi/abs/10.5555/102887"
+  },
+  {
+    "title": "Software engineering (ed.)",
+    "author": [
+      "I Sommerville"
+    ],
+    "abstract": "Software engineering is, therefore, a critically important technology for the future of mankind  software engineers and develop the discipline so that we can create more complex software",
+    "year": "2011",
+    "url": "https://epage.pub/doc/software-engineering-9ed-354prljv4e"
+  }
+]
