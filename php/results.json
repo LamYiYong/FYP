@@ -1,51 +1,50 @@
 [
   {
-    "title": "Research in software engineering: an analysis of the literature",
+    "title": "Some computer science issues in ubiquitous computing",
     "author": [
-      "RL Glass",
-      "I Vessey",
-      "V Ramesh"
+      "M Weiser"
     ],
-    "abstract": "In this paper, we examine the state of software engineering ( of the field of software engineering  research, we determined to  key journals of the software engineering literature during that",
-    "year": "2002",
-    "url": "https://www.sciencedirect.com/science/article/pii/S0950584902000496"
+    "abstract": "existing computer science. The fruitfulness of ubiquitous computing for new computer science   The following subsections \"ascend\" the levels of organization of a computer system, from",
+    "year": "1993",
+    "url": "https://dl.acm.org/doi/abs/10.1145/159544.159617"
   },
   {
-    "title": "Software engineering",
+    "title": "Foundations of computer science",
     "author": [
-      "KK Aggarwal"
+      "AV Aho",
+      "JD Ullman"
     ],
-    "abstract": "software using well established software engineering methodologies. Software engineering  methodologies constitute the framework that guides us in optimally developing the software",
+    "abstract": "computing to students. Non-majors get an exceptionally lucid view of computing without  experiencing the “computer science  by all instructors of introductory computer science courses.",
+    "year": "1992",
+    "url": "https://dl.acm.org/doi/abs/10.5555/114768"
+  },
+  {
+    "title": "A computer science perspective",
+    "author": [
+      "JY Stein"
+    ],
+    "abstract": ", at the Computer and Informations Sciences department of  was not offered to Computer  Science undergraduates (it was  ’ to teach a new Computer Science undergraduate elective",
+    "year": "2000",
+    "url": "https://dsp-book.narod.ru/DSPCSP/05.pdf"
+  },
+  {
+    "title": "Is computer science science?",
+    "author": [
+      "PJ Denning"
+    ],
+    "abstract": "12] Science, engineering, and mathematics combine into a unique and potent blend in  our field. Some of our activities are primarily science—for example, experimental algorithms",
     "year": "2005",
-    "url": "https://books.google.com/books?hl=en&lr=&id=dx2C9Zkez5YC&oi=fnd&pg=PA1&dq=Software+Engineering&ots=ZfVbZkNocI&sig=rgLFT92Nzh-7K0jc1FxoWJ_qWDI"
+    "url": "https://dl.acm.org/doi/abs/10.1145/1053291.1053309"
   },
   {
-    "title": "Systematic review in software engineering",
+    "title": "Computer science: An overview",
     "author": [
-      "J Biolchini",
-      "PG Mian",
-      "ACC Natali"
+      "JG Brookshear",
+      "D Brylow",
+      "S Manasa"
     ],
-    "abstract": "Differently to the medical area, Software Engineering has some  software engineering is  that most software engineering methods and techniques must be performed by skilled software",
-    "year": "2005",
-    "url": "https://www.elizabete.com.br/ihc2012/Tutorial_IHC_2012_files/ConceitosRevisaoSistematica_Biolchini.pdf"
-  },
-  {
-    "title": "Software engineering",
-    "author": [
-      "SR Schach"
-    ],
-    "abstract": "This paper aims to present software engineering ontology as software engineering  knowledge representation for a multi-site software development. It will not only facilitate the",
-    "year": "1990",
-    "url": "https://dl.acm.org/doi/abs/10.5555/102887"
-  },
-  {
-    "title": "Software engineering (ed.)",
-    "author": [
-      "I Sommerville"
-    ],
-    "abstract": "Software engineering is, therefore, a critically important technology for the future of mankind  software engineers and develop the discipline so that we can create more complex software",
-    "year": "2011",
-    "url": "https://epage.pub/doc/software-engineering-9ed-354prljv4e"
+    "abstract": "We wrote this text for students of computer science as well as students from other  disciplines. As for computer science students, most begin their studies with the illusion that",
+    "year": "2009",
+    "url": "https://miemagazine.com/sample/Science/SC301-400/SC830/sample-Computer%20Science%20An%20Overview%2013th%2013E%20Glenn%20Brookshear.pdf"
   }
 ]
