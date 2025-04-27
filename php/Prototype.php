@@ -13,6 +13,59 @@ if (!isset($_SESSION['UserID'])) {
     header("Location: Login.php");
     exit();
 }
+$output = null;
+$papers = [];
+$sort_by = $_POST['sort_by'] ?? '';
+$sort_order = $_POST['sort_order'] ?? 'desc'; // Default sort descending
+
+if (isset($_POST['search'])) {
+    $search = escapeshellarg($_POST['search']);
+    $command = "python search.py $search"; // Use python3 if needed
+    $output = shell_exec($command);
+
+    if ($output !== null) {
+        $papers = json_decode($output, true);
+
+        // Apply sorting
+        if (!empty($papers) && is_array($papers)) {
+            switch ($sort_by) {
+                case 'year':
+                    usort($papers, function($a, $b) use ($sort_order) {
+                        return ($sort_order == 'asc') 
+                            ? ($a['year'] ?? 0) <=> ($b['year'] ?? 0)
+                            : ($b['year'] ?? 0) <=> ($a['year'] ?? 0);
+                    });
+                    break;
+                case 'popularity':
+                    usort($papers, function($a, $b) use ($sort_order) {
+                        return ($sort_order == 'asc') 
+                            ? ($a['num_citations'] ?? 0) <=> ($b['num_citations'] ?? 0)
+                            : ($b['num_citations'] ?? 0) <=> ($a['num_citations'] ?? 0);
+                    });
+                    break;
+                case 'region':
+                    usort($papers, function($a, $b) use ($sort_order) {
+                        return ($sort_order == 'asc') 
+                            ? strcmp($a['venue'], $b['venue']) 
+                            : strcmp($b['venue'], $a['venue']);
+                    });
+                    break;
+                case 'author':
+                    usort($papers, function($a, $b) use ($sort_order) {
+                        $authorA = is_array($a['authors']) ? ($a['authors'][0] ?? '') : $a['authors'];
+                        $authorB = is_array($b['authors']) ? ($b['authors'][0] ?? '') : $b['authors'];
+                        return ($sort_order == 'asc') 
+                            ? strcmp($authorA, $authorB) 
+                            : strcmp($authorB, $authorA);
+                    });
+                    break;
+                default:
+                    // No sorting
+                    break;
+            }
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,70 +84,66 @@ if (!isset($_SESSION['UserID'])) {
         <div class="about">
             <p>Welcome! This system leverages AI to suggest research papers based on your interests.</p>
         </div>
-        <div class="input-section">
-            <input type="text" id="searchQuery" placeholder="Enter a topic or field of interest...">
-            <button onclick="suggestPapers()">Suggest Papers</button>
-        </div>
+        <form method="post" class="input-section">
+            <input type="text" name="search" placeholder="Enter research topic..." value="<?= htmlspecialchars($_POST['search'] ?? '') ?>" required>
+
+            <!-- Sorting field -->
+            <select name="sort_by" style="margin-left:10px; padding:0.5rem;">
+                <option value="">Sort By</option>
+                <option value="year" <?= ($sort_by == 'year' ? 'selected' : '') ?>>Publish Year</option>
+                <option value="popularity" <?= ($sort_by == 'popularity' ? 'selected' : '') ?>>Popularity (Citations)</option>
+                <option value="region" <?= ($sort_by == 'region' ? 'selected' : '') ?>>Region (Venue)</option>
+                <option value="author" <?= ($sort_by == 'author' ? 'selected' : '') ?>>Prominent Author</option>
+            </select>
+
+            <!-- Sorting order field -->
+            <select name="sort_order" style="margin-left:10px; padding:0.5rem;">
+                <option value="desc" <?= ($sort_order == 'desc' ? 'selected' : '') ?>>↓ Descending</option>
+                <option value="asc" <?= ($sort_order == 'asc' ? 'selected' : '') ?>>↑ Ascending</option>
+            </select>
+
+            <button type="submit">Search</button>
+        </form>
         <div class="papers-list">
             <h2>Here are some papers you might be interested in:</h2>
             <div id="papers"></div>
         </div>
-        <div class="logout">
-            
+        <div class="logout">  
+        </div>
+        <div class="papers-list">
+            <?php if (isset($_POST['search'])): ?>
+                <?php if (isset($papers['error'])): ?>
+                    <p style="color:red;">Error: <?= htmlspecialchars($papers['error']) ?></p>
+                <?php elseif (empty($papers)): ?>
+                    <p>No papers found.</p>
+                <?php else: ?>
+                    <h2>Results for "<?= htmlspecialchars($_POST['search']) ?>"
+                    <?php if ($sort_by): ?>
+                        (Sorted by <?= htmlspecialchars(ucwords(str_replace('_', ' ', $sort_by))) ?> <?= $sort_order == 'asc' ? '↑' : '↓' ?>)
+                    <?php endif; ?>
+                    </h2>
+
+                    <?php foreach ($papers as $paper): ?>
+                        <div class="paper-item">
+                            <div class="paper-title"><?= htmlspecialchars($paper['title']) ?></div>
+                            <div class="paper-details">
+                                <strong>Authors:</strong> <?= htmlspecialchars(is_array($paper['authors']) ? implode(', ', $paper['authors']) : $paper['authors']) ?><br>
+                                <strong>Year:</strong> <?= htmlspecialchars($paper['year']) ?><br>
+                                <strong>Venue:</strong> <?= htmlspecialchars($paper['venue']) ?><br>
+                                <strong>Citations:</strong> <?= htmlspecialchars($paper['num_citations'] ?? 0) ?><br><br>
+                                <?php if (!empty($paper['abstract'])): ?>
+                                    <strong>Abstract:</strong> <?= htmlspecialchars($paper['abstract']) ?><br><br>
+                                <?php endif; ?>
+                                <?php if (!empty($paper['url'])): ?>
+                                    <a href="<?= htmlspecialchars($paper['url']) ?>" target="_blank">View Paper</a>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            <?php endif; ?>
         </div>
     </div>
-
-    <script>
-        async function suggestPapers() {
-            const query = document.getElementById('searchQuery').value.trim();
-            const papersContainer = document.getElementById('papers');
-            papersContainer.innerHTML = '';
-
-            if (!query) {
-                alert('Please enter a topic or field of interest.');
-                return;
-            }
-
-            const apiUrl = `https://api.crossref.org/works?query=${encodeURIComponent(query)}&rows=5`;
-
-            try {
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-
-                if (data.message && data.message.items && data.message.items.length > 0) {
-                    data.message.items.forEach(paper => {
-                        if (paper.title && paper.title.length > 0) {
-                            const paperElement = document.createElement('div');
-                            paperElement.className = 'paper-item';
-
-                            const titleElement = document.createElement('div');
-                            titleElement.className = 'paper-title';
-                            const titleLink = document.createElement('a');
-                            titleLink.href = paper.URL;
-                            titleLink.target = '_blank';
-                            titleLink.textContent = paper.title[0];
-                            titleElement.appendChild(titleLink);
-
-                            paperElement.appendChild(titleElement);
-
-                            const detailsElement = document.createElement('div');
-                            detailsElement.className = 'paper-details';
-                            const publishedDate = paper['published-print'] ? paper['published-print']['date-parts'][0].join('-') : 'N/A';
-                            detailsElement.textContent = `Published: ${publishedDate} | DOI: ${paper.DOI}`;
-                            paperElement.appendChild(detailsElement);
-
-                            papersContainer.appendChild(paperElement);
-                        }
-                    });
-                } else {
-                    papersContainer.innerHTML = '<p>No papers found matching your query.</p>';
-                }
-            } catch (error) {
-                console.error('Error fetching papers:', error);
-                papersContainer.innerHTML = '<p>There was an error fetching the papers. Please try again later.</p>';
-            }
-        }
-    </script>
 </body>
 
 </html>
