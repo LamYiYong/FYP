@@ -42,6 +42,7 @@ $conn->close();
     <title>Profile</title>
     <link rel="stylesheet" href="../css/profile.css">
     <link rel="stylesheet" href="../css/navbar.css">
+    <link rel="stylesheet" href="../css/Prototype.css">
 </head>
 <body>
 <?php include 'nav-bar.php' ?>
