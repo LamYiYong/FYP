@@ -16,34 +16,33 @@ if (!isset($_SESSION['UserID'])) {
     header("Location: Login.php");
     exit();
 }
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pdf_url']) && isset($_POST['question'])) {
-    $pdfUrl = escapeshellarg($_POST['pdf_url']);
-    $question = $_POST['question'];
-    $command = "python3 extract_pdf_text.py $pdfUrl";
-    $output = shell_exec($command);
-    $data = json_decode($output, true);
-
-    if (isset($data['content'])) {
-        echo json_encode([
-            "prompt" => "PDF:\n" . $data['content'] . "\n\nQuestion:\n" . $question
-        ]);
-    } else {
-        echo json_encode(["error" => "Failed to extract text."]);
-    }
-    exit;
-}
-
-// Page & limit for pagination
-$page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-$limit = 5;
-$offset = ($page - 1) * $limit;
 
 // 🔎 Search logic
 $output = null;
 $papers = [];
 $sort_by = $_POST['sort_by'] ?? '';
 $sort_order = $_POST['sort_order'] ?? 'desc';
-$search_query = $_POST['search'] ?? $_GET['search'] ?? '';
+$search_query = $_GET['search'] ?? '';
+$relatedTopics = [];
+
+
+function scorePaper($paper, $keywords) {
+    $score = 0;
+    $text = strtolower($paper['title'] . ' ' . ($paper['abstract'] ?? ''));
+    foreach ($keywords as $word) {
+        if (strpos($text, $word) !== false) {
+            $score++;
+        }
+    }
+    return $score;
+}
+
+function getRelatedTopicsAI($query) {
+    $escaped = escapeshellarg($query);
+    $command = "python3 related_topics.py $escaped";
+    $output = shell_exec($command);
+    return json_decode($output, true) ?? [];
+}
 
 if (!empty($search_query)) {
     $escaped = escapeshellarg($search_query);
@@ -52,9 +51,8 @@ if (!empty($search_query)) {
 
     if ($output !== null) {
         $papers = json_decode($output, true);
-
         if (!empty($papers) && is_array($papers)) {
-            // ✅ Deduplicate by lowercase title
+            // Deduplicate by lowercase title
             $seenTitles = [];
             $papers = array_filter($papers, function($paper) use (&$seenTitles) {
                 $titleKey = strtolower(trim($paper['title']));
@@ -65,12 +63,21 @@ if (!empty($search_query)) {
                 return true;
             });
 
-            // ✅ Reindex array
             $papers = array_values($papers);
+
+            $searchWords = explode(" ", strtolower($search_query));
+            $extractedKeywordsForDisplay = $searchWords;
+            usort($papers, function($a, $b) use ($searchWords) {
+                return scorePaper($b, $searchWords) <=> scorePaper($a, $searchWords);
+            });
+
+            $relatedTopics = getRelatedTopicsAI($search_query);
         }
     }
 }
+
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -88,13 +95,34 @@ if (!empty($search_query)) {
     <p>Welcome! This system leverages AI to suggest and summarize research papers based on your interests.</p>
   </div>
 
-  <!-- 🔀 Search Form -->
-  <form method="post" class="input-section">
+  <form method="GET" class="input-section" onsubmit="showSpinner()">
     <input type="text" name="search" placeholder="Enter research topic..." value="<?= htmlspecialchars($search_query) ?>" required>
     <button type="submit">Search</button>
   </form>
 
-  <!-- 📋 Search Results -->
+  <div id="spinnerContainer" class="spinner-container">
+      <div class="spinner"></div>
+    </div>
+  <div id="loadingTime" class="loading-time"></div>
+
+  <?php if (!empty($relatedTopics)): ?>
+    <div class="related-box" style="margin-top: 10px;">
+      <strong>🧠 Related Topics:</strong>
+      <ul style="margin-top: 5px;">
+        <?php foreach ($relatedTopics as $topic): ?>
+          <li style="display: inline-block; margin: 5px;">
+            <form method="get" style="display:inline;" onsubmit="showSpinner()">
+              <input type="hidden" name="search" value="<?= htmlspecialchars($topic) ?>">
+              <button type="submit" style="border:none; background:#eee; padding:5px 10px; border-radius:5px; cursor:pointer;">
+                <?= htmlspecialchars($topic) ?>
+              </button>
+            </form>
+          </li>
+        <?php endforeach; ?>
+      </ul>
+    </div>
+  <?php endif; ?>
+
   <div class="papers-list">
     <?php if (!empty($search_query)): ?>
       <?php if (isset($papers['error'])): ?>
@@ -102,33 +130,27 @@ if (!empty($search_query)) {
       <?php elseif (empty($papers)): ?>
         <p>No papers found.</p>
       <?php else: ?>
-        <h2><?= count($papers) ?> research paper<?= count($papers) > 1 ? 's' : '' ?> found for "<?= htmlspecialchars($search_query) ?>"
-        </h2>
-      <?php foreach ($papers as $paper): ?>
-<div class="paper-item">
-  <div class="paper-title"><?= htmlspecialchars($paper['title']) ?></div>
-  <div class="paper-details">
-    <strong>Authors:</strong> <?= htmlspecialchars(is_array($paper['authors']) ? implode(', ', $paper['authors']) : $paper['authors']) ?><br>
-    <strong>Year:</strong> <?= htmlspecialchars($paper['year']) ?><br>
-    <strong>Citations:</strong> <?= htmlspecialchars($paper['num_citations'] ?? 0) ?><br><br>
-    <strong>Source:</strong> <?= htmlspecialchars($paper['source'] ?? 'N/A') ?><br><br>
-    <?php if (!empty($paper['url'])): ?>
-      <a href="<?= htmlspecialchars($paper['url']) ?>" target="_blank" class="view-btn">View Paper</a>
-    <?php endif; ?>
-  </div>
-</div>
+        <h2><?= count($papers) ?> research paper<?= count($papers) > 1 ? 's' : '' ?> found for "<?= htmlspecialchars($search_query) ?>"</h2>
+        <?php foreach ($papers as $paper): ?>
+          <div class="paper-item">
+            <div class="paper-title"><?= htmlspecialchars($paper['title']) ?></div>
+            <div class="paper-details">
+              <strong>Authors:</strong> <?= htmlspecialchars(is_array($paper['authors']) ? implode(', ', $paper['authors']) : $paper['authors']) ?><br>
+              <strong>Year:</strong> <?= htmlspecialchars($paper['year']) ?><br>
+              <strong>Citations:</strong> <?= htmlspecialchars($paper['num_citations'] ?? 0) ?><br><br>
+              <?php if (!empty($paper['abstract'])): ?>
+                <strong>Abstract:</strong> <?= htmlspecialchars($paper['abstract']) ?><br><br>
+              <?php endif; ?>
+              <?php if (!empty($paper['url'])): ?>
+                <a href="view_logger.php?paper_id=<?= urlencode($paper['url']) ?>&title=<?= urlencode($paper['title']) ?>" target="_blank" class="view-btn">View Paper</a>
+            <?php endif; ?>
+            </div>
+          </div>
         <?php endforeach; ?>
-
-        <!-- Pagination -->
-        <div style="text-align:center; margin-top: 20px;">
-          <?php if ($page > 1): ?>
-            <a href="?search=<?= urlencode($search_query) ?>&sort_by=<?= $sort_by ?>&sort_order=<?= $sort_order ?>&page=<?= $page - 1 ?>" class="summarize-btn">← Prev</a>
-          <?php endif; ?>
-          <a href="?search=<?= urlencode($search_query) ?>&sort_by=<?= $sort_by ?>&sort_order=<?= $sort_order ?>&page=<?= $page + 1 ?>" class="summarize-btn">Next →</a>
-        </div>
       <?php endif; ?>
     <?php endif; ?>
   </div>
 </div>
 </body>
+  <script src="../js/Prototype.js"></script>
 </html>
