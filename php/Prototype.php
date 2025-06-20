@@ -143,7 +143,9 @@ if (!empty($search_query)) {
               <?php endif; ?>
               <?php if (!empty($paper['url'])): ?>
                 <a href="view_logger.php?paper_id=<?= urlencode($paper['url']) ?>&title=<?= urlencode($paper['title']) ?>" target="_blank" class="view-btn">View Paper</a>
-            <?php endif; ?>
+                <button class="summarize-btn" data-title="<?= htmlspecialchars($paper['title']) ?>">Summarize</button>
+                <div class="summary-output" style="margin-top: 5px;"></div>
+                <?php endif; ?>
             </div>
           </div>
         <?php endforeach; ?>
@@ -151,6 +153,6 @@ if (!empty($search_query)) {
     <?php endif; ?>
   </div>
 </div>
+<script src="../js/Prototype.js"></script>
 </body>
-  <script src="../js/Prototype.js"></script>
 </html>

@@ -116,3 +116,28 @@ h1 {
     font-size: 0.9rem;
     color: #666;
 }
+.summarize-btn {
+    background-color: #71d299;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 8px;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.summarize-btn:hover {
+    background-color: #67bd8a;
+}
+.summarize-btn:active {
+    background-color: #588a6d;
+}
+.view-text {
+    background: white;
+    padding: 8px;
+    border-radius: 4px;
+    font-style: italic;
+    color: #333;
+}

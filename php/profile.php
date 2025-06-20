@@ -1,14 +1,9 @@
 <?php
 // Assuming you have a session started and the user is logged in
 session_start();
+$conn = new mysqli("localhost", "root", "", "fyp");
 
-// Database connection
-$servername = "localhost";
-$username = "root"; // Change this to your DB username
-$password = ""; // Change this to your DB password
-$dbname = "fyp"; // Change this to your database name
-
-$conn = new mysqli($servername, $username, $password, $dbname);
+$userId = $_SESSION['UserID'] ?? 0;
 
 // Check connection
 if ($conn->connect_error) {

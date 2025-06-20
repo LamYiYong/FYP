@@ -4,7 +4,7 @@ import json
 from semanticscholar import fetch_papers as fetch_semantic
 from crossref import fetch_crossref_papers
 
-def aggregate_results(query, limit=30):
+def aggregate_results(query, limit=20):
     semantic_results = fetch_semantic(query, 0, limit // 2)
     crossref_results = fetch_crossref_papers(query, rows=limit // 2)
 
