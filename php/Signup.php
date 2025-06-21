@@ -40,7 +40,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" placeholder="Abc@1234" required>
-                <div><input type="checkbox" id="showPassword">Show Password</div>
+                <input type="checkbox" id="showPassword" name="showPassword">
+                <label for="showPassword">Show Password</label>
             </div>
             <button type="submit" class="signup-btn">Sign Up</button>
             <p class="login-link">Already have an account? <a href="Login.php">Log In</a></p>

@@ -35,11 +35,10 @@ html {
   }
   
   .signup-form label {
-    font-size: 14px;
     color: #555;
   }
   
-  .signup-form input {
+  input[type="text"],input[type="email"],input[type="password"] {
     width: 95%;
     padding: 0.5rem;
     font-size: 14px;
@@ -47,7 +46,12 @@ html {
     border: 1px solid #ddd;
     border-radius: 4px;
   }
-  
+
+  input[type="checkbox"]{
+    margin-top: 8px;
+    margin-bottom: 0;
+  }
+
   .signup-btn {
     width: 100%;
     background: #00aeef;

@@ -1,21 +1,29 @@
-let interval;
-let startTime;
+let countdownInterval;
+let remainingSeconds = 30;
 
 function showSpinner() {
     const spinner = document.getElementById("spinnerContainer");
     const timeDisplay = document.getElementById("loadingTime");
+
     spinner.style.display = "flex";
-    startTime = Date.now();
-    interval = setInterval(() => {
-        const seconds = Math.floor((Date.now() - startTime) / 1000);
-        timeDisplay.innerText = `Estimated Time: ${seconds}s`;
+    remainingSeconds = 30;
+
+    timeDisplay.innerText = `Estimated Time: ${remainingSeconds}s`;
+
+    countdownInterval = setInterval(() => {
+        remainingSeconds--;
+        if (remainingSeconds <= 0) {
+            clearInterval(countdownInterval);
+            timeDisplay.innerText = "Still loading...";
+        } else {
+            timeDisplay.innerText = `Estimated Time: ${remainingSeconds}s`;
+        }
     }, 1000);
 }
-
 function hideSpinner() {
     const spinner = document.getElementById("spinnerContainer");
     spinner.style.display = "none";
-    clearInterval(interval);
+    clearInterval(countdownInterval);
 }
 
 document.querySelectorAll(".summarize-btn").forEach(button => {

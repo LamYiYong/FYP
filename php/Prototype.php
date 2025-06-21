@@ -91,10 +91,6 @@ if (!empty($search_query)) {
 <?php include 'nav-bar.php' ?>
 <div class="container">
   <h1>AI-Driven Research Paper System</h1>
-  <div class="about">
-    <p>Welcome! This system leverages AI to suggest and summarize research papers based on your interests.</p>
-  </div>
-
   <form method="GET" class="input-section" onsubmit="showSpinner()">
     <input type="text" name="search" placeholder="Enter research topic..." value="<?= htmlspecialchars($search_query) ?>" required>
     <button type="submit">Search</button>
@@ -113,7 +109,7 @@ if (!empty($search_query)) {
           <li style="display: inline-block; margin: 5px;">
             <form method="get" style="display:inline;" onsubmit="showSpinner()">
               <input type="hidden" name="search" value="<?= htmlspecialchars($topic) ?>">
-              <button type="submit" style="border:none; background:#eee; padding:5px 10px; border-radius:5px; cursor:pointer;">
+              <button type="submit" class="reltopic-btn">
                 <?= htmlspecialchars($topic) ?>
               </button>
             </form>
@@ -132,23 +128,42 @@ if (!empty($search_query)) {
       <?php else: ?>
         <h2><?= count($papers) ?> research paper<?= count($papers) > 1 ? 's' : '' ?> found for "<?= htmlspecialchars($search_query) ?>"</h2>
         <?php foreach ($papers as $paper): ?>
-          <div class="paper-item">
-            <div class="paper-title"><?= htmlspecialchars($paper['title']) ?></div>
-            <div class="paper-details">
-              <strong>Authors:</strong> <?= htmlspecialchars(is_array($paper['authors']) ? implode(', ', $paper['authors']) : $paper['authors']) ?><br>
-              <strong>Year:</strong> <?= htmlspecialchars($paper['year']) ?><br>
-              <strong>Citations:</strong> <?= htmlspecialchars($paper['num_citations'] ?? 0) ?><br><br>
-              <?php if (!empty($paper['abstract'])): ?>
-                <strong>Abstract:</strong> <?= htmlspecialchars($paper['abstract']) ?><br><br>
-              <?php endif; ?>
-              <?php if (!empty($paper['url'])): ?>
-                <a href="view_logger.php?paper_id=<?= urlencode($paper['url']) ?>&title=<?= urlencode($paper['title']) ?>" target="_blank" class="view-btn">View Paper</a>
-                <button class="summarize-btn" data-title="<?= htmlspecialchars($paper['title']) ?>">Summarize</button>
-                <div class="summary-output" style="margin-top: 5px;"></div>
-                <?php endif; ?>
-            </div>
-          </div>
-        <?php endforeach; ?>
+  <div class="paper-item">
+    <div class="paper-title"><?= htmlspecialchars($paper['title']) ?></div>
+    <div class="paper-details">
+
+      <?php if (!empty($paper['authors'])): ?>
+        <strong>Authors:</strong> <?= htmlspecialchars(is_array($paper['authors']) ? implode(', ', $paper['authors']) : $paper['authors']) ?><br>
+      <?php endif; ?>
+
+      <?php if (!empty($paper['year'])): ?>
+        <strong>Year:</strong> <?= htmlspecialchars($paper['year']) ?><br>
+      <?php endif; ?>
+
+      <?php if (!empty($paper['num_citations'])): ?>
+        <strong>Citations:</strong> <?= htmlspecialchars($paper['num_citations']) ?><br>
+      <?php endif; ?>
+
+      <?php if (!empty($paper['abstract'])): ?>
+        <br><strong>Abstract:</strong> <?= htmlspecialchars($paper['abstract']) ?><br>
+      <?php endif; ?>
+
+      <?php if (!empty($paper['url'])): ?>
+        <br>
+        <a href="view_logger.php?paper_id=<?= urlencode($paper['url']) ?>&title=<?= urlencode($paper['title']) ?>" target="_blank" class="view-btn">View Paper</a>
+        <button class="summarize-btn" data-title="<?= htmlspecialchars($paper['title']) ?>">Summarize</button>
+        <div class="summary-output" style="margin-top: 5px;"></div>
+
+        <form method="POST" action="bookmark.php" style="display:inline;">
+          <input type="hidden" name="paper_id" value="<?= htmlspecialchars($paper['url']) ?>">
+          <input type="hidden" name="title" value="<?= htmlspecialchars($paper['title']) ?>">
+          <button class="svpaper-button" type="submit" title="Save to Library">Save</button>
+        </form>
+      <?php endif; ?>
+
+    </div>
+  </div>
+<?php endforeach; ?>
       <?php endif; ?>
     <?php endif; ?>
   </div>

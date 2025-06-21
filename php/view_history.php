@@ -14,11 +14,12 @@ if (!isset($_SESSION['UserID'])) {
 
 $userId = $_SESSION['UserID'];
 
-// Clear history if form is submitted
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clear_history'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clear_history-btn'])) {
     $clearStmt = $conn->prepare("DELETE FROM viewhistory WHERE UserID = ?");
     $clearStmt->bind_param("i", $userId);
     $clearStmt->execute();
+    header("Location: view_history.php?cleared=1"); // Redirect prevents resubmission
+    exit();
 }
 
 // Fetch viewed papers for current user
@@ -36,26 +37,27 @@ $result = $stmt->get_result();
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Viewed Research Paper History</title>
-    <link rel="stylesheet" href="../css/Prototype.css">
+    <title>History</title>
+    <link rel="stylesheet" href="../css/History.css">
     <link rel="stylesheet" href="../css/navbar.css">
 </head>
 <body>
     <?php include 'nav-bar.php' ?>
-    
+    <h1>&#128338;History</h1>
     <div class="container">
-        <h2>Viewed Research Paper History</h2>
         <form method="post" onsubmit="return confirm('Are you sure you want to clear all your viewed history?');">
-            <button type="submit" name="clear_history">🗑️ Clear History</button>
+            <button type="submit" class="clear_history-btn" name="clear_history-btn">🗑️ Clear History</button>
         </form>
 
         <?php if ($result->num_rows > 0): ?>
             <ul>
                 <?php while ($row = $result->fetch_assoc()): ?>
-                    <li style="margin-bottom: 20px;">
+                    <li>
                         <strong><?= htmlspecialchars($row['Title']) ?></strong><br>
                         <small>Viewed on <?= htmlspecialchars($row['ViewDate']) ?></small><br>
-                        <a href="<?= htmlspecialchars($row['Source']) ?>" target="_blank">Open Paper</a>
+                        <a href="<?= htmlspecialchars($row['Source']) ?>" target="_blank" class="view-btn" >View Paper</a>
+                        <button class="summarize-btn" data-title="<?= htmlspecialchars($row['Title']) ?>">Summarize</button>
+                        <div class="summary-output"></div>
                     </li>
                 <?php endwhile; ?>
             </ul>
@@ -64,4 +66,26 @@ $result = $stmt->get_result();
         <?php endif; ?>
     </div>
 </body>
+<script>
+        document.querySelectorAll('.summarize-btn').forEach(button => {
+            button.addEventListener('click', async () => {
+                const title = button.getAttribute('data-title');
+                const outputDiv = button.nextElementSibling;
+
+                outputDiv.textContent = "Summarizing...";
+
+                try {
+                    const response = await fetch("chat.php", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ title })
+                    });
+                    const data = await response.json();
+                    outputDiv.textContent = data.summary || "No summary available.";
+                } catch (error) {
+                    outputDiv.textContent = "Error summarizing.";
+                }
+            });
+        });
+</script>
 </html>

@@ -54,16 +54,16 @@ $user = $result->fetch_assoc();
 <html>
 <head>
     <title>Update Profile</title>
-    <link rel="stylesheet" href="../css/profile.css">
+    <link rel="stylesheet" href="../css/update_profile.css">
     <link rel="stylesheet" href="../css/navbar.css">
     <link rel="stylesheet" href="../css/Prototype.css">
 </head>
 <body>
     <?php include 'nav-bar.php' ?>
-    <div class="profile-details">
-        <h2>Update Profile</h2>
-        <?php if ($success): ?><p style="color:green"><?= $success ?></p><?php endif; ?>
-        <?php if ($error): ?><p style="color:red"><?= $error ?></p><?php endif; ?>
+    <div class="form-container">
+        <h2>&#128221;Update Profile</h2>
+        <?php if ($success): ?><p class="success" style="color:green"><?= $success ?></p><?php endif; ?>
+        <?php if ($error): ?><p class="error" style="color:red"><?= $error ?></p><?php endif; ?>
 
         <form method="post">
             <p><label>Name:</label><br>
@@ -78,8 +78,10 @@ $user = $result->fetch_assoc();
             <p><label>Confirm New Password:</label><br>
             <input type="password" name="confirm_password"></p>
 
+            <div class="btn-container">
             <button type="submit" class="update-button">Update Profile</button>
-            <a href="../php/profile.php" class="update-button" style="background-color: #6c757d; margin-left: 10px;">Back</a>
+            <a href="../php/profile.php" class="back-button">Back</a>
+            </div>
         </form>
     </div>
     
