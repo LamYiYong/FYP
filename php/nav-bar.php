@@ -6,7 +6,6 @@
             <div class="nav-links">
                 <a href="profile.php">Profile</a>
                 <a href="library.php">Bookmark</a>
-                <a href="view_history.php">History</a>
                 <a href="Login.php">Logout</a>
             </div>
         </div>
