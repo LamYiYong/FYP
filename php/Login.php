@@ -2,6 +2,8 @@
 session_start();
 $conn = new mysqli("localhost", "root", "", "fyp");
 
+$error = "";
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $password = $_POST['password'];
@@ -19,10 +21,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("Location: Prototype.php");
             exit();
         } else {
-            echo '<script>alert("Incorrect password.")</script>';
+            $error = "❌ Incorrect password.";
         }
     } else {
-        echo '<script>alert("No user found with this email.")</script>';
+         $error = "❌ No user found with this email.";
     }
 }
 ?>
@@ -38,6 +40,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <body>
     <div class="login-container">
+    <?php if (!empty($error)): ?>
+        <p style="color: red; text-align: center;"><?= htmlspecialchars($error) ?></p>
+    <?php endif; ?>
         <form class="login-form" action="Login.php" method="POST">
             <img src="../css/image/icon.png" alt="">
             <h1>Welcome</h1>

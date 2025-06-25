@@ -16,7 +16,13 @@ topic_pool = [
         "speech recognition", "semantic web", "graph neural networks", "AI in healthcare",
         "IoT security", "blockchain", "quantum computing", "bioinformatics",
         "user experience", "human-computer interaction", "recommender systems",
-        "multimodal learning", "sentiment analysis", "social network analysis"
+        "multimodal learning", "sentiment analysis", "social network analysis",
+        "game engines", "Unity development", "Unreal Engine", "2D game development", "3D game development",
+        "physics in games", "collision detection", "game AI", "pathfinding algorithms", "procedural generation",
+        "game mechanics", "game design patterns", "level design", "player behavior modeling",
+        "multiplayer networking", "lag compensation", "client-server architecture in games",
+        "virtual reality games", "augmented reality in games", "XR development",
+        "mobile game development", "console game development", "PC game optimization",
 ]
 
 topic_embeddings = model.encode(topic_pool, convert_to_tensor=True)

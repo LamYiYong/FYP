@@ -80,19 +80,9 @@ foreach ($keywordMap as $keyword => $monthCounts) {
         'backgroundColor' => sprintf('#%06X', mt_rand(0, 0xFFFFFF))
     ];
 }
+
 $result = $conn->query("SELECT COUNT(DISTINCT DATE(ViewedAt)) as active FROM viewhistory WHERE UserID = $userId");
 $activeDays = $result->fetch_assoc()['active'] ?? 0;
-// Suggested papers based on top topic
-$suggestedPapers = [];
-if (!empty($topTopics)) {
-    $firstTopic = urlencode($topTopics[0]['Keyword']);
-    $api_url = "http://127.0.0.1:5000/aggregate?q=$firstTopic";
-    $response = file_get_contents($api_url);
-    if ($response !== false) {
-        $suggestedPapers = json_decode($response, true);
-        $suggestedPapers = array_slice($suggestedPapers, 0, 5); // Show top 5
-    }
-}
 $conn->close();
 ?>
 
@@ -135,11 +125,11 @@ $conn->close();
             <h3>Active Days</h3>
             <p><?= $activeDays ?></p>
         </div>
-    <div class="chart-box">
+</div>
+    <div>
         <h3>📈 Topic Trends Over Time</h3>
         <canvas id="topicTrendChart"></canvas>
     </div>
-</div>
 
 <script>
 const ctx = document.getElementById('topicTrendChart');
