@@ -1,0 +1,45 @@
+.btn-container{
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.view-btn-bookmark {
+    background-color: #00AEEF;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 3px;
+    margin-bottom:6px;
+    font-size: 0.9rem;
+}
+.view-btn-bookmark:hover{
+    background-color: #008ec1;
+}
+
+.view-btn-bookmark:active{
+    background-color: #006b92;
+}
+.bookmark-link{
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.newest-date-btn, .oldest-date-btn{
+    background-color: orange;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.newest-date-btn:hover, .oldest-date-btn:hover{
+    background-color: rgb(219, 148, 15);
+}
+
+.newest-date-btn:active, .oldest-date-btn:active{
+    background-color: rgb(193, 138, 35);
+}

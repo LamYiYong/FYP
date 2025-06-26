@@ -13,6 +13,34 @@ body {
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
+.title-container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title-container button{
+  width: fit-content;
+  height: fit-content;
+    border: none;
+  background-color: none;
+}
+
+#suggested-box {
+    overflow: hidden;
+    transition: max-height 0.5s ease, opacity 0.3s ease;
+    max-height: 1000px; /* large enough to show content */
+    opacity: 1;
+}
+
+#suggested-box.hidden {
+    max-height: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+
 h1 {
     text-align: center;
     color: #333;
@@ -198,11 +226,26 @@ h1 {
 .cite-btn:hover {
   background-color: #e68900;
 }
+.svpaper-button{
+  background-color: #76DEAC;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 8px;
+  font-size: 0.9rem;
+  text-decoration: none;
+  margin-left: 3px;
+}
+.svpaper-button:hover {
+  background-color: #61a484;
+}
+
 .filter-group input[type="range"] {
   width: 100%;
   margin-top: 5px;
 }
-
 .quick-buttons {
   margin-top: 10px;
 }
@@ -230,7 +273,6 @@ h1 {
 }
 
 .suggested-box h2 {
-  margin-bottom: 0.5rem;
   color: #333;
 }
 

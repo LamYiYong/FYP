@@ -56,10 +56,14 @@ function scorePaper($paper, $keywords) {
 }
 
 function getRelatedTopicsAI($query) {
-    $escaped = escapeshellarg($query);
-    $command = "python3 related_topics.py $escaped";
-    $output = shell_exec($command);
-    return json_decode($output, true) ?? [];
+    $api_url = "http://127.0.0.1:5001/related_topics?q=" . urlencode($query);
+    $response = @file_get_contents($api_url);
+
+    if ($response === false) {
+        return []; // fallback if API is down
+    }
+
+    return json_decode($response, true) ?? [];
 }
 
 if (!empty($search_query)) {
@@ -112,14 +116,21 @@ if (!empty($search_query)) {
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/Prototype.css">
   <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 <body>
 <?php include 'nav-bar.php' ?>
 <div class="container">
   <h1>AI-Driven Research Paper System</h1>
   <?php if (!empty($suggestedPapers)): ?>
-  <div class="suggested-box">
+    <!-- Toggle Button -->
+
+  <div class="suggested-box" >
+    <div class="title-container">
     <h2>🔍 Recommended for You</h2>
+    <button type="button" onclick="toggleSuggested()" id="toggle-btn"><i class="fa-solid fa-chevron-up"></i></button>
+    </div>
+    <div id="suggested-box">
     <p>Based on your most searched topic: <strong><?= htmlspecialchars($topTopic ?? 'N/A') ?></strong></p>
     <?php foreach ($suggestedPapers as $paper): ?>
       <div class="paper-item">
@@ -136,6 +147,7 @@ if (!empty($search_query)) {
         </div>
       </div>
     <?php endforeach; ?>
+    </div>
   </div>
 <?php endif; ?><br>
 
@@ -189,8 +201,7 @@ if (!empty($search_query)) {
     <button type="button" onclick="filterLastYears(5)">Last 5 years</button>
     <button type="button" onclick="filterLastYears(10)">Last 10 years</button>
   </div>
-</div>
-    </div>
+</div><br>
 <?php endif; ?>
         <?php foreach ($papers as $paper): ?>
           <div class="paper-item"
@@ -223,7 +234,7 @@ if (!empty($search_query)) {
                   "year" => $paper["year"] ?? "n.d.",
                   "publisher" => $paper["publisher"] ?? "Unknown Publisher",
                   "url" => $paper["url"] ?? "#"
-                  ]); ?>)'>📚 Cite</button>
+                  ]); ?>)'>Cite</button>
                 <form method="POST" action="bookmark.php" style="display:inline;">
                   <input type="hidden" name="paper_id" value="<?= htmlspecialchars($paper['url']) ?>">
                   <input type="hidden" name="title" value="<?= htmlspecialchars($paper['title']) ?>">
@@ -242,7 +253,7 @@ if (!empty($search_query)) {
       <option value="IEEE">IEEE</option>
     </select>
     <pre id="citationText" style="margin-top: 10px; white-space: pre-wrap;"></pre>
-    <button onclick="copyCitation()">📋 Copy</button>
+    <button onclick="copyCitation()">Copy</button>
   </div>
 </div>
             </div>
@@ -253,5 +264,33 @@ if (!empty($search_query)) {
   </div>
 </div>
 <script src="../js/Prototype.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const box = document.getElementById("suggested-box");
+    const btnIcon = document.querySelector("#toggle-btn i");
+    const isHidden = localStorage.getItem("suggestedHidden") === "true";
+
+    if (isHidden) {
+        box.classList.add("hidden");
+        btnIcon.classList.replace("fa-chevron-down", "fa-chevron-up");
+    } else {
+        box.classList.remove("hidden");
+        btnIcon.classList.replace("fa-chevron-up", "fa-chevron-down");
+    }
+});
+
+function toggleSuggested() {
+    const box = document.getElementById("suggested-box");
+    const btnIcon = document.querySelector("#toggle-btn i");
+
+    const isNowHidden = box.classList.toggle("hidden");
+
+    btnIcon.classList.toggle("fa-chevron-down", !isNowHidden);
+    btnIcon.classList.toggle("fa-chevron-up", isNowHidden);
+
+    localStorage.setItem("suggestedHidden", isNowHidden);
+}
+</script>
+
 </body>
 </html>

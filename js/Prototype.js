@@ -1,12 +1,12 @@
 let countdownInterval;
-let remainingSeconds = 30;
+let remainingSeconds = 10;
 
 function showSpinner() {
     const spinner = document.getElementById("spinnerContainer");
     const timeDisplay = document.getElementById("loadingTime");
 
     spinner.style.display = "flex";
-    remainingSeconds = 30;
+    remainingSeconds = 10;
 
     timeDisplay.innerText = `Estimated Time: ${remainingSeconds}s`;
 
@@ -117,3 +117,7 @@ function filterLastYears(n) {
   document.getElementById("yearEnd").value = end;
   updateYearDisplay();
 }
+
+
+
+
