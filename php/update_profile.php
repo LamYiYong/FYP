@@ -66,7 +66,7 @@ $user = $result->fetch_assoc();
         <?php if ($error): ?><p class="error" style="color:red"><?= $error ?></p><?php endif; ?>
 
         <form method="post">
-            <p><label>Name:</label><br>
+            <p><label>Username:</label><br>
             <input type="text" name="name" value="<?= htmlspecialchars($user['Name']) ?>" required></p>
 
             <p><label>Email:</label><br>
