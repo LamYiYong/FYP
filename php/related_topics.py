@@ -1,3 +1,7 @@
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+import tensorflow as tf
 from flask import Flask, request, jsonify
 from sentence_transformers import SentenceTransformer, util
 import torch
