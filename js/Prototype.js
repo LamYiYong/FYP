@@ -25,27 +25,6 @@ function hideSpinner() {
     spinner.style.display = "none";
     clearInterval(countdownInterval);
 }
-
-document.querySelectorAll(".summarize-btn").forEach(button => {
-  button.addEventListener("click", async () => {
-    const title = button.dataset.title;
-    const output = button.nextElementSibling;
-    output.innerText = "Summarizing...";
-
-    try {
-      const response = await fetch("../php/chat.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title })
-      });
-
-      const data = await response.json();
-      output.innerText = data.summary || "No summary returned.";
-    } catch (err) {
-      output.innerText = "Error while summarizing.";
-    }
-  });
-});
 let currentPaper = {};
 
 function showCitation(paper) {
