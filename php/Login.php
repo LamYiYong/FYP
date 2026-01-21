@@ -40,9 +40,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <body>
     <div class="login-container">
-    <?php if (!empty($error)): ?>
+        <?php if (!empty($error)): ?>
         <p style="color: red; text-align: center;"><?= htmlspecialchars($error) ?></p>
-    <?php endif; ?>
+        <?php endif; ?>
         <form class="login-form" action="Login.php" method="POST">
             <img src="../css/image/icon.png" alt="">
             <h1>Welcome</h1>
@@ -63,4 +63,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
     <script src="../js/Login.js"></script>
 </body>
+
 </html>

@@ -52,12 +52,14 @@ $user = $result->fetch_assoc();
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Update Profile</title>
     <link rel="stylesheet" href="../css/update_profile.css">
     <link rel="stylesheet" href="../css/navbar.css">
     <link rel="stylesheet" href="../css/Prototype.css">
 </head>
+
 <body>
     <?php include 'nav-bar.php' ?>
     <div class="form-container">
@@ -67,23 +69,28 @@ $user = $result->fetch_assoc();
 
         <form method="post">
             <p><label>Username:</label><br>
-            <input type="text" name="name" value="<?= htmlspecialchars($user['Name']) ?>" required></p>
+                <input type="text" name="name" value="<?= htmlspecialchars($user['Name']) ?>" required>
+            </p>
 
             <p><label>Email:</label><br>
-            <input type="email" name="email" value="<?= htmlspecialchars($user['Email']) ?>" required></p>
+                <input type="email" name="email" value="<?= htmlspecialchars($user['Email']) ?>" required>
+            </p>
 
             <p><label>New Password (optional):</label><br>
-            <input type="password" name="password" ></p>
+                <input type="password" name="password">
+            </p>
 
             <p><label>Confirm New Password:</label><br>
-            <input type="password" name="confirm_password"></p>
+                <input type="password" name="confirm_password">
+            </p>
 
             <div class="btn-container">
-            <button type="submit" class="update-button">Update Profile</button>
-            <a href="../php/profile.php" class="back-button">Back</a>
+                <button type="submit" class="update-button">Update Profile</button>
+                <a href="../php/profile.php" class="back-button">Back</a>
             </div>
         </form>
     </div>
-    
+
 </body>
+
 </html>

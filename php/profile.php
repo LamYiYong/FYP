@@ -88,6 +88,7 @@ $conn->close();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -97,81 +98,83 @@ $conn->close();
     <link rel="stylesheet" href="../css/profile.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
-<?php include 'nav-bar.php' ?>
-<h1>&#128100;Profile</h1>
-<div class="container">
-    <div class="profile-details">
-        <p><strong>Username:</strong> <?php echo htmlspecialchars($user['Name']); ?></p>
-        <p><strong>Email:</strong> <?php echo htmlspecialchars($user['Email']); ?></p>
-        <a href="update_profile.php" class="update-button">Update Profile</a>
-    </div>
+    <?php include 'nav-bar.php' ?>
+    <h1>&#128100;Profile</h1>
+    <div class="container">
+        <div class="profile-details">
+            <p><strong>Username:</strong> <?php echo htmlspecialchars($user['Name']); ?></p>
+            <p><strong>Email:</strong> <?php echo htmlspecialchars($user['Email']); ?></p>
+            <a href="update_profile.php" class="update-button">Update Profile</a>
+        </div>
 
-    <h2 style="margin-top: 2rem;">📊 Your Dashboard</h2>
-    <div class="stats-grid">
-        <div class="card">
-            <h3>Total Views</h3>
-            <p><?= $viewedCount ?></p>
+        <h2 style="margin-top: 2rem;">📊 Your Dashboard</h2>
+        <div class="stats-grid">
+            <div class="card">
+                <h3>Total Views</h3>
+                <p><?= $viewedCount ?></p>
+            </div>
+            <div class="card">
+                <h3>Saved Papers</h3>
+                <p><?= $savedCount ?></p>
+            </div>
+            <div class="card">
+                <h3>Top Topic</h3>
+                <p><?= $topTopics[0]['Keyword'] ?? 'N/A' ?></p>
+            </div>
+            <div class="card">
+                <h3>Active Days</h3>
+                <p><?= $activeDays ?></p>
+            </div>
         </div>
-        <div class="card">
-            <h3>Saved Papers</h3>
-            <p><?= $savedCount ?></p>
+        <div>
+            <h3>📈 Topic Trends Over Time</h3>
+            <canvas id="topicTrendChart"></canvas>
         </div>
-        <div class="card">
-            <h3>Top Topic</h3>
-            <p><?= $topTopics[0]['Keyword'] ?? 'N/A' ?></p>
-        </div>
-        <div class="card">
-            <h3>Active Days</h3>
-            <p><?= $activeDays ?></p>
-        </div>
-</div>
-    <div>
-        <h3>📈 Topic Trends Over Time</h3>
-        <canvas id="topicTrendChart"></canvas>
-    </div>
 
-<script>
-const ctx = document.getElementById('topicTrendChart');
-new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: <?= json_encode($chartLabels) ?>,
-        datasets: <?= json_encode($datasetsJS) ?>
-    },
-    options: {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: 'top'
+        <script>
+        const ctx = document.getElementById('topicTrendChart');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: <?= json_encode($chartLabels) ?>,
+                datasets: <?= json_encode($datasetsJS) ?>
             },
-            title: {
-                display: true,
-                text: 'Search Keywords Over Time'
-            }
-        },
-        scales: {
-            x: {
-                title: {
-                    display: true,
-                    text: 'Month'
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Search Keywords Over Time'
+                    }
                 },
-                beginAtZero: true
-            },
-            y: {
-                title: {
-                    display: true,
-                    text: 'Number of Searches'
-                },
-                beginAtZero: true,
-                ticks: {
-                    stepSize: 1,
-                    precision: 0
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Month'
+                        },
+                        beginAtZero: true
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Number of Searches'
+                        },
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            precision: 0
+                        }
+                    }
                 }
             }
-        }
-    }
-});
-</script>
+        });
+        </script>
 </body>
+
 </html>

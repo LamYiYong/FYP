@@ -110,187 +110,195 @@ if (!empty($search_query)) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Home</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/Prototype.css">
-  <link rel="stylesheet" href="../css/navbar.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/Prototype.css">
+    <link rel="stylesheet" href="../css/navbar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
+
 <body>
-<?php include 'nav-bar.php' ?>
-<div class="container">
-  <h1>AI-Driven Research Paper System</h1>
-  <?php if (!empty($suggestedPapers)): ?>
-    <!-- Toggle Button -->
+    <?php include 'nav-bar.php' ?>
+    <div class="container">
+        <h1>AI-Driven Research Paper System</h1>
+        <?php if (!empty($suggestedPapers)): ?>
+        <!-- Toggle Button -->
 
-  <div class="suggested-box" >
-    <div class="title-container">
-    <h2>🔍 Recommended for You</h2>
-    <button type="button" onclick="toggleSuggested()" id="toggle-btn"><i class="fa-solid fa-chevron-up"></i></button>
-    </div>
-    <div id="suggested-box">
-    <p>Based on your most searched topic: <strong><?= htmlspecialchars($topTopic ?? 'N/A') ?></strong></p>
-    <?php foreach ($suggestedPapers as $paper): ?>
-      <div class="paper-item">
-        <div class="paper-title"><?= htmlspecialchars($paper['title']) ?></div>
-        <div class="paper-details">
-          <?php if (!empty($paper['year'])): ?>
-            <strong>Year:</strong> <?= htmlspecialchars($paper['year']) ?><br>
-          <?php endif; ?>
-          <?php if (!empty($paper['num_citations'])): ?>
-            <strong>Citations:</strong> <?= htmlspecialchars($paper['num_citations']) ?><br>
-          <?php endif; ?>
-          <br>
-          <a href="<?= htmlspecialchars($paper['url']) ?>" target="_blank" class="view-btn">View</a>
+        <div class="suggested-box">
+            <div class="title-container">
+                <h2>🔍 Recommended for You</h2>
+                <button type="button" onclick="toggleSuggested()" id="toggle-btn"><i
+                        class="fa-solid fa-chevron-up"></i></button>
+            </div>
+            <div id="suggested-box">
+                <p>Based on your most searched topic: <strong><?= htmlspecialchars($topTopic ?? 'N/A') ?></strong></p>
+                <?php foreach ($suggestedPapers as $paper): ?>
+                <div class="paper-item">
+                    <div class="paper-title"><?= htmlspecialchars($paper['title']) ?></div>
+                    <div class="paper-details">
+                        <?php if (!empty($paper['year'])): ?>
+                        <strong>Year:</strong> <?= htmlspecialchars($paper['year']) ?><br>
+                        <?php endif; ?>
+                        <?php if (!empty($paper['num_citations'])): ?>
+                        <strong>Citations:</strong> <?= htmlspecialchars($paper['num_citations']) ?><br>
+                        <?php endif; ?>
+                        <br>
+                        <a href="<?= htmlspecialchars($paper['url']) ?>" target="_blank" class="view-btn">View</a>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
         </div>
-      </div>
-    <?php endforeach; ?>
-    </div>
-  </div>
-<?php endif; ?><br>
+        <?php endif; ?><br>
 
-  <form method="GET" class="input-section" onsubmit="showSpinner()">
-    <input type="text" name="search" placeholder="Enter research topic..." value="<?= htmlspecialchars($search_query) ?>" required>
-    <button type="submit">Search</button>
-  </form>
+        <form method="GET" class="input-section" onsubmit="showSpinner()">
+            <input type="text" name="search" placeholder="Enter research topic..."
+                value="<?= htmlspecialchars($search_query) ?>" required>
+            <button type="submit">Search</button>
+        </form>
 
-  <div id="spinnerContainer" class="spinner-container">
-      <div class="spinner"></div>
-  </div>
-  <div id="loadingTime" class="loading-time"></div>
+        <div id="spinnerContainer" class="spinner-container">
+            <div class="spinner"></div>
+        </div>
+        <div id="loadingTime" class="loading-time"></div>
 
-  <?php if (!empty($relatedTopics)): ?>
-    <div class="related-box" style="margin-top: 10px;">
-      <strong>🧠 Related Topics:</strong>
-      <ul style="margin-top: 5px;">
-        <?php foreach ($relatedTopics as $topic): ?>
-          <li style="display: inline-block; margin: 5px;">
-            <form method="get" style="display:inline;" onsubmit="showSpinner()">
-              <input type="hidden" name="search" value="<?= htmlspecialchars($topic) ?>">
-              <button type="submit" class="reltopic-btn">
-                <?= htmlspecialchars($topic) ?>
-              </button>
-            </form>
-          </li>
-        <?php endforeach; ?>
-      </ul>
-    </div>
-  <?php endif; ?>
+        <?php if (!empty($relatedTopics)): ?>
+        <div class="related-box" style="margin-top: 10px;">
+            <strong>🧠 Related Topics:</strong>
+            <ul style="margin-top: 5px;">
+                <?php foreach ($relatedTopics as $topic): ?>
+                <li style="display: inline-block; margin: 5px;">
+                    <form method="get" style="display:inline;" onsubmit="showSpinner()">
+                        <input type="hidden" name="search" value="<?= htmlspecialchars($topic) ?>">
+                        <button type="submit" class="reltopic-btn">
+                            <?= htmlspecialchars($topic) ?>
+                        </button>
+                    </form>
+                </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+        <?php endif; ?>
 
-  <div class="papers-list">
-    <?php if (!empty($search_query)): ?>
-      <?php if (isset($papers['error'])): ?>
-        <p style="color:red;">Error: <?= htmlspecialchars($papers['error']) ?></p>
-      <?php elseif (empty($papers)): ?>
-        <p>No papers found.</p>
-      <?php else: ?>
-        <h2><?= count($papers) ?> research paper<?= count($papers) > 1 ? 's' : '' ?> found for "<?= htmlspecialchars($search_query) ?>"</h2>
-        <?php if (!empty($papers)): ?>
-  <div class="filter-panel">
-    <h3>Filter Papers</h3>
-    <div class="filter-group">
-  <label>Year Range:</label>
-  <input type="range" id="yearStart" min="1931" max="2025" value="1931" oninput="updateYearDisplay()">
-  <input type="range" id="yearEnd" min="1931" max="2025" value="2025" oninput="updateYearDisplay()">
-  <p style="margin-top: 5px;">From <span id="yearDisplayStart">1931</span> to <span id="yearDisplayEnd">2025</span></p>
+        <div class="papers-list">
+            <?php if (!empty($search_query)): ?>
+            <?php if (isset($papers['error'])): ?>
+            <p style="color:red;">Error: <?= htmlspecialchars($papers['error']) ?></p>
+            <?php elseif (empty($papers)): ?>
+            <p>No papers found.</p>
+            <?php else: ?>
+            <h2><?= count($papers) ?> research paper<?= count($papers) > 1 ? 's' : '' ?> found for
+                "<?= htmlspecialchars($search_query) ?>"</h2>
+            <?php if (!empty($papers)): ?>
+            <div class="filter-panel">
+                <h3>Filter Papers</h3>
+                <div class="filter-group">
+                    <label>Year Range:</label>
+                    <input type="range" id="yearStart" min="1931" max="2025" value="1931" oninput="updateYearDisplay()">
+                    <input type="range" id="yearEnd" min="1931" max="2025" value="2025" oninput="updateYearDisplay()">
+                    <p style="margin-top: 5px;">From <span id="yearDisplayStart">1931</span> to <span
+                            id="yearDisplayEnd">2025</span></p>
 
-  <div class="quick-buttons">
-    <button type="button" onclick="filterThisYear()">This year</button>
-    <button type="button" onclick="filterLastYears(5)">Last 5 years</button>
-    <button type="button" onclick="filterLastYears(10)">Last 10 years</button>
-  </div>
-</div><br>
-<?php endif; ?>
-        <?php foreach ($papers as $paper): ?>
-          <div class="paper-item"
-                data-year="<?= htmlspecialchars($paper['year'] ?? '') ?>">
-          <div class="paper-title"><?= htmlspecialchars($paper['title']) ?></div>
-            <div class="paper-details">
+                    <div class="quick-buttons">
+                        <button type="button" onclick="filterThisYear()">This year</button>
+                        <button type="button" onclick="filterLastYears(5)">Last 5 years</button>
+                        <button type="button" onclick="filterLastYears(10)">Last 10 years</button>
+                    </div>
+                </div><br>
+                <?php endif; ?>
+                <?php foreach ($papers as $paper): ?>
+                <div class="paper-item" data-year="<?= htmlspecialchars($paper['year'] ?? '') ?>">
+                    <div class="paper-title"><?= htmlspecialchars($paper['title']) ?></div>
+                    <div class="paper-details">
 
-              <?php if (!empty($paper['authors'])): ?>
-                <strong>Authors:</strong> <?= htmlspecialchars(is_array($paper['authors']) ? implode(', ', $paper['authors']) : $paper['authors']) ?><br>
-              <?php endif; ?>
+                        <?php if (!empty($paper['authors'])): ?>
+                        <strong>Authors:</strong>
+                        <?= htmlspecialchars(is_array($paper['authors']) ? implode(', ', $paper['authors']) : $paper['authors']) ?><br>
+                        <?php endif; ?>
 
-              <?php if (!empty($paper['year'])): ?>
-                <strong>Year:</strong> <?= htmlspecialchars($paper['year']) ?><br>
-              <?php endif; ?>
+                        <?php if (!empty($paper['year'])): ?>
+                        <strong>Year:</strong> <?= htmlspecialchars($paper['year']) ?><br>
+                        <?php endif; ?>
 
-              <?php if (!empty($paper['num_citations'])): ?>
-                <strong>Citations:</strong> <?= htmlspecialchars($paper['num_citations']) ?><br>
-              <?php endif; ?>
+                        <?php if (!empty($paper['num_citations'])): ?>
+                        <strong>Citations:</strong> <?= htmlspecialchars($paper['num_citations']) ?><br>
+                        <?php endif; ?>
 
-              <?php if (!empty($paper['abstract'])): ?>
-                <br><strong>Abstract:</strong> <?= htmlspecialchars($paper['abstract']) ?><br>
-              <?php endif; ?>
+                        <?php if (!empty($paper['abstract'])): ?>
+                        <br><strong>Abstract:</strong> <?= htmlspecialchars($paper['abstract']) ?><br>
+                        <?php endif; ?>
 
-              <?php if (!empty($paper['url'])): ?>
-                <br>
-                <a href="view_logger.php?paper_id=<?= urlencode($paper['url']) ?>&title=<?= urlencode($paper['title']) ?>" target="_blank" class="view-btn">View Paper</a>
-                <button class="cite-btn" onclick='showCitation(<?php echo json_encode([
+                        <?php if (!empty($paper['url'])): ?>
+                        <br>
+                        <a href="view_logger.php?paper_id=<?= urlencode($paper['url']) ?>&title=<?= urlencode($paper['title']) ?>"
+                            target="_blank" class="view-btn">View Paper</a>
+                        <button class="cite-btn" onclick='showCitation(<?php echo json_encode([
                   "title" => $paper["title"],
                   "authors" => $paper["authors"] ?? "Unknown",
                   "year" => $paper["year"] ?? "n.d.",
                   "publisher" => $paper["publisher"] ?? "Unknown Publisher",
                   "url" => $paper["url"] ?? "#"
                   ]); ?>)'>Cite</button>
-                <form method="POST" action="bookmark.php" style="display:inline;">
-                  <input type="hidden" name="paper_id" value="<?= htmlspecialchars($paper['url']) ?>">
-                  <input type="hidden" name="title" value="<?= htmlspecialchars($paper['title']) ?>">
-                  <button class="svpaper-button" type="submit" title="Save to Library">Save</button>
-                </form>
-              <?php endif; ?>
-                  <!-- Citation Modal -->
-<div id="citationModal" class="modal hidden">
-  <div class="modal-content">
-    <span class="close" onclick="closeCitationModal()">&times;</span>
-    <h3>Generated Citation</h3>
-    <label for="citationFormat">Select Format:</label>
-    <select id="citationFormat" onchange="updateCitation()">
-      <option value="APA">APA</option>
-      <option value="MLA">MLA</option>
-      <option value="IEEE">IEEE</option>
-    </select>
-    <pre id="citationText" style="margin-top: 10px; white-space: pre-wrap;"></pre>
-    <button onclick="copyCitation()">Copy</button>
-  </div>
-</div>
+                        <form method="POST" action="bookmark.php" style="display:inline;">
+                            <input type="hidden" name="paper_id" value="<?= htmlspecialchars($paper['url']) ?>">
+                            <input type="hidden" name="title" value="<?= htmlspecialchars($paper['title']) ?>">
+                            <button class="svpaper-button" type="submit" title="Save to Library">Save</button>
+                        </form>
+                        <?php endif; ?>
+                        <!-- Citation Modal -->
+                        <div id="citationModal" class="modal hidden">
+                            <div class="modal-content">
+                                <span class="close" onclick="closeCitationModal()">&times;</span>
+                                <h3>Generated Citation</h3>
+                                <label for="citationFormat">Select Format:</label>
+                                <select id="citationFormat" onchange="updateCitation()">
+                                    <option value="APA">APA</option>
+                                    <option value="MLA">MLA</option>
+                                    <option value="IEEE">IEEE</option>
+                                </select>
+                                <pre id="citationText" style="margin-top: 10px; white-space: pre-wrap;"></pre>
+                                <button onclick="copyCitation()">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+                <?php endif; ?>
+                <?php endif; ?>
             </div>
-          </div>
-        <?php endforeach; ?>
-      <?php endif; ?>
-    <?php endif; ?>
-  </div>
-</div>
-<script src="../js/Prototype.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const box = document.getElementById("suggested-box");
-    const btnIcon = document.querySelector("#toggle-btn i");
-    const isHidden = localStorage.getItem("suggestedHidden") === "true";
+        </div>
+        <script src="../js/Prototype.js"></script>
+        <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const box = document.getElementById("suggested-box");
+            const btnIcon = document.querySelector("#toggle-btn i");
+            const isHidden = localStorage.getItem("suggestedHidden") === "true";
 
-    if (isHidden) {
-        box.classList.add("hidden");
-        btnIcon.classList.replace("fa-chevron-down", "fa-chevron-up");
-    } else {
-        box.classList.remove("hidden");
-        btnIcon.classList.replace("fa-chevron-up", "fa-chevron-down");
-    }
-});
+            if (isHidden) {
+                box.classList.add("hidden");
+                btnIcon.classList.replace("fa-chevron-down", "fa-chevron-up");
+            } else {
+                box.classList.remove("hidden");
+                btnIcon.classList.replace("fa-chevron-up", "fa-chevron-down");
+            }
+        });
 
-function toggleSuggested() {
-    const box = document.getElementById("suggested-box");
-    const btnIcon = document.querySelector("#toggle-btn i");
+        function toggleSuggested() {
+            const box = document.getElementById("suggested-box");
+            const btnIcon = document.querySelector("#toggle-btn i");
 
-    const isNowHidden = box.classList.toggle("hidden");
+            const isNowHidden = box.classList.toggle("hidden");
 
-    btnIcon.classList.toggle("fa-chevron-down", !isNowHidden);
-    btnIcon.classList.toggle("fa-chevron-up", isNowHidden);
+            btnIcon.classList.toggle("fa-chevron-down", !isNowHidden);
+            btnIcon.classList.toggle("fa-chevron-up", isNowHidden);
 
-    localStorage.setItem("suggestedHidden", isNowHidden);
-}
-</script>
+            localStorage.setItem("suggestedHidden", isNowHidden);
+        }
+        </script>
 
 </body>
+
 </html>
