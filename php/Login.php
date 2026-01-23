@@ -5,27 +5,34 @@ $conn = new mysqli("localhost", "root", "", "fyp");
 $error = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    $email = trim($_POST['email']??'');
+    $password = $_POST['password']??'';
 
+    // Input Validation
+    if (empty($email) || empty($password)) {
+    $error = "❌ Email and password are required.";
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $error = "❌ Invalid email format.";
+    }
+
+    // Query DB only if validation passed
     $query = "SELECT * FROM users WHERE Email = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
 
+    // User Verification
     if ($result->num_rows == 1) {
         $user = $result->fetch_assoc();
-        if ($password === $user['Password']) {
+        if (password_verify($password, $user['Password'])) {
             $_SESSION['UserID'] = $user['UserID'];
             header("Location: Prototype.php");
             exit();
         } else {
             $error = "❌ Incorrect password.";
         }
-    } else {
-         $error = "❌ No user found with this email.";
-    }
+    } 
 }
 ?>
 <!DOCTYPE html>
@@ -48,11 +55,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h1>Welcome</h1>
             <div class="input-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="abc@gmail.com" required>
+                <input type="email" id="email" name="email" placeholder="abc@gmail.com">
             </div>
             <div class="input-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Abc@1234" required>
+                <input type="password" id="password" name="password" placeholder="Abc@1234">
             </div>
             <input type="checkbox" id="showPassword"> Show Password
             <button type="submit" class="login-button">Login</button>

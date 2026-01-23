@@ -2,51 +2,69 @@
 session_start();
 $conn = new mysqli("localhost", "root", "", "fyp");
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
 if (!isset($_SESSION['UserID'])) {
     header("Location: Login.php");
     exit();
 }
 
 $userId = $_SESSION['UserID'];
-$success = $error = "";
+$error = $success = "";
 
 // Handle form submission
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = trim($_POST['name']);
-    $email = trim($_POST['email']);
-    $password = trim($_POST['password']);
-    $confirmPassword = trim($_POST['confirm_password']);
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    if (!empty($name) && !empty($email)) {
+    $name = trim($_POST['name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+    $confirmPassword = $_POST['confirm_password'] ?? '';
+
+    // 1️⃣ Basic validation
+    if (empty($name) || empty($email)) {
+        $error = "Name and email are required.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = "Invalid email format.";
+    } else {
+
+        // 2️⃣ Decide whether password is updated
         if (!empty($password)) {
-            if ($password !== $confirmPassword) {
+
+            if (strlen($password) < 8) {
+                $error = "Password must be at least 8 characters.";
+            } elseif ($password !== $confirmPassword) {
                 $error = "Passwords do not match.";
             } else {
-                $hashedPassword = $password;
-                $stmt = $conn->prepare("UPDATE users SET Name = ?, Email = ?, Password = ? WHERE UserID = ?");
+                // ✅ Hash new password
+                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+                $stmt = $conn->prepare(
+                    "UPDATE users SET Name=?, Email=?, Password=? WHERE UserID=?"
+                );
                 $stmt->bind_param("sssi", $name, $email, $hashedPassword, $userId);
-                $stmt->execute() ? $success = "Profile updated successfully." : $error = "Update failed. Please try again.";
+
+                $stmt->execute()
+                    ? $success = "Profile updated successfully."
+                    : $error = "Update failed. Please try again.";
             }
+
         } else {
-            $stmt = $conn->prepare("UPDATE users SET Name = ?, Email = ? WHERE UserID = ?");
+            // ✅ Update without touching password
+            $stmt = $conn->prepare(
+                "UPDATE users SET Name=?, Email=? WHERE UserID=?"
+            );
             $stmt->bind_param("ssi", $name, $email, $userId);
-            $stmt->execute() ? $success = "Profile updated successfully." : $error = "Update failed. Please try again.";
+
+            $stmt->execute()
+                ? $success = "Profile updated successfully."
+                : $error = "Update failed. Please try again.";
         }
-    } else {
-        $error = "Name and email are required.";
     }
 }
 
-// Fetch current info
+// Fetch current user info
 $stmt = $conn->prepare("SELECT Name, Email FROM users WHERE UserID = ?");
 $stmt->bind_param("i", $userId);
 $stmt->execute();
-$result = $stmt->get_result();
-$user = $result->fetch_assoc();
+$user = $stmt->get_result()->fetch_assoc();
 ?>
 
 

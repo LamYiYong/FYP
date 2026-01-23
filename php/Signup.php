@@ -4,14 +4,17 @@ $conn = new mysqli("localhost", "root", "", "fyp");
 $error = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
-    $email = $_POST['email'];
+    $username = trim($_POST['username']);
+    $email = trim($_POST['email']);
     $password = $_POST['password'];
 
     // Password validation
     if (strlen($password) < 8) {
         $error = "❌ Password must contain at least 8 characters.";
     } else {
+
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
         // Check for existing account
         $checkQuery = "SELECT * FROM users WHERE Name = ? OR Email = ?";
         $checkStmt = $conn->prepare($checkQuery);
@@ -25,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Insert user
             $query = "INSERT INTO users (Name, Email, Password) VALUES (?, ?, ?)";
             $stmt = $conn->prepare($query);
-            $stmt->bind_param("sss", $username, $email, $password);
+            $stmt->bind_param("sss", $username, $email, $hashedPassword);
 
             if ($stmt->execute()) {
                 echo "<script>alert('✅ Registered Successfully.'); window.location.href='../php/Login.php';</script>";
